@@ -12,19 +12,25 @@ class ActivityStore {
   @observable submitting = false;
   @observable target = "";
 
-  @computed get activitiesByDate(){
-    return this.groupActivitiesByDate(Array.from(this.activityRegistry.values()))
+  @computed get activitiesByDate() {
+    return this.groupActivitiesByDate(
+      Array.from(this.activityRegistry.values())
+    );
   }
 
-  groupActivitiesByDate(activities: IActivity[]){
+  groupActivitiesByDate(activities: IActivity[]) {
     const sortedActivities = activities.sort(
       (a, b) => Date.parse(a.date) - Date.parse(b.date)
-    )
-    return Object.entries(sortedActivities.reduce((activities, activity) => {
-      const date = activity.date.split('T')[0];
-      activities[date] = activities[date] ? [...activities[date], activity]: [activity];
-      return activities;
-    }, {} as {[key: string]: IActivity[]}));
+    );
+    return Object.entries(
+      sortedActivities.reduce((activities, activity) => {
+        const date = activity.date.split("T")[0];
+        activities[date] = activities[date]
+          ? [...activities[date], activity]
+          : [activity];
+        return activities;
+      }, {} as { [key: string]: IActivity[] })
+    );
   }
 
   @action loadActivities = async () => {
@@ -54,7 +60,7 @@ class ActivityStore {
       this.loadingInitial = true;
       try {
         activity = await agent.Activities.details(id);
-        runInAction('getting activity', () => {
+        runInAction("getting activity", () => {
           this.activity = activity;
         });
       } catch (error) {
@@ -62,14 +68,14 @@ class ActivityStore {
       } finally {
         runInAction(() => {
           this.loadingInitial = false;
-        });     
+        });
       }
     }
   };
 
-  @action clearActivity = () =>{
+  @action clearActivity = () => {
     this.activity = null;
-  }
+  };
 
   getActivity = (id: string) => {
     return this.activityRegistry.get(id);
