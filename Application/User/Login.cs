@@ -52,7 +52,6 @@ namespace Application.User
 
                 if (result.Succeeded)
                 {
-                    //TODO: generate toke
                     return new User
                     {
                         DisplayName = user.Displayname,
