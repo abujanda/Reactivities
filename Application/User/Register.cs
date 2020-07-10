@@ -58,7 +58,7 @@ namespace Application.User
                     throw new RestException(HttpStatusCode.BadRequest, new { Username = "Username already exists" });
 
                 var user = new AppUser{
-                    Displayname = request.DisplayName,
+                    DisplayName = request.DisplayName,
                     Email = request.Email,
                     UserName = request.Username
                 };
@@ -69,7 +69,7 @@ namespace Application.User
                 {
                     return new User
                     {
-                        DisplayName = user.Displayname,
+                        DisplayName = user.DisplayName,
                         Token = _jwtGenerator.CreateToken(user),
                         Username = user.UserName,
                         Image = null

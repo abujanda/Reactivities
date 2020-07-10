@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Persistence.Migrations
 {
-    public partial class AddedIdentity : Migration
+    public partial class UserActivityEntity : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -40,7 +40,7 @@ namespace Persistence.Migrations
                     LockoutEnd = table.Column<DateTimeOffset>(nullable: true),
                     LockoutEnabled = table.Column<bool>(nullable: false),
                     AccessFailedCount = table.Column<int>(nullable: false),
-                    Displayname = table.Column<string>(nullable: true)
+                    DisplayName = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -153,6 +153,32 @@ namespace Persistence.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "UserActivities",
+                columns: table => new
+                {
+                    AppUserId = table.Column<string>(nullable: false),
+                    ActivityId = table.Column<Guid>(nullable: false),
+                    DateJoined = table.Column<DateTime>(nullable: false),
+                    IsHost = table.Column<bool>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserActivities", x => new { x.AppUserId, x.ActivityId });
+                    table.ForeignKey(
+                        name: "FK_UserActivities_Activities_ActivityId",
+                        column: x => x.ActivityId,
+                        principalTable: "Activities",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_UserActivities_AspNetUsers_AppUserId",
+                        column: x => x.AppUserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -189,6 +215,11 @@ namespace Persistence.Migrations
                 table: "AspNetUsers",
                 column: "NormalizedUserName",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserActivities_ActivityId",
+                table: "UserActivities",
+                column: "ActivityId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -207,6 +238,9 @@ namespace Persistence.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUserTokens");
+
+            migrationBuilder.DropTable(
+                name: "UserActivities");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
